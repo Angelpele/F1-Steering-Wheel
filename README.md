@@ -42,7 +42,7 @@ The **8 buttons** are arranged with a resistor ladder configuration, reading all
 📄 Find the **Circuit Schematic** right below:
 
 <p align="center">
-  <a href="./media/schematic.pdf">
+  <a href="Hardware/Volante Maquinillo.pdf">
     <img src="Hardware/Volante Maquinillo.pdf" width="900" alt="Electronics Schematic">
   </a>
 </p>
