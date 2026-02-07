@@ -39,6 +39,17 @@ The decoder uses **4 control lines** to efficiently manage all LED outputs.
 
 The **8 buttons** are arranged with a resistor ladder configuration, reading all the possible values with an ADC converter (analog input).
 
+📄 Find the **Circuit Schematic** right below:
+
+<p align="center">
+  <a href="./media/schematic.pdf">
+    <img src="Hardware/Volante Maquinillo.pdf" width="900" alt="Electronics Schematic">
+  </a>
+</p>
+
+
+
+
 ---
 
 ## ⚙️ Mechanical Design
