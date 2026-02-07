@@ -1,9 +1,9 @@
 # 🏎️ F1 Steering Wheel
 
-This project is a **custom-made F1-style steering wheel** designed and built entirely from scratch, featuring a **custom PCB**, advanced input/output handling, and a rigid mechanical structure optimized for sim racing or automotive-style control systems.
+This project is a **custom-made F1-style steering wheel** designed and built entirely from scratch, featuring a **custom PCB**, advanced input/output handling, and a rigid mechanical structure optimized for sim racing or small racing karts.
 
 <p align="center">
-  <img src="./media/MVIMG_20260207_000909.jpg" width="650">
+  <img src="Media/MVIMG_20260207_000909.jpg" width="1000">
 </p>
 
 ---
@@ -12,30 +12,32 @@ This project is a **custom-made F1-style steering wheel** designed and built ent
 
 The steering wheel is built around a **custom-designed PCB** using an **ESP32-C6 DevKitC-1** as the main controller, providing high performance and wireless capabilities.
 
-<p align="center">
-  <img src="PASTE_PCB_IMAGE_HERE" width="600">
-</p>
-
 ### Main Electronic Features
 
 | Component | Description |
 |---------|-------------|
 | **ESP32-C6 DevKitC-1** | Main microcontroller handling inputs, logic, and communication |
-| **74LS154 Decoder** | 4-to-16 line decoder used to drive LED groups |
+| **74LS154 Decoder** | 4-to-16 line decoder used to drive LED array |
 | **15 LEDs (RGB Groups)** | Divided into 3 groups of 5 LEDs (Green, Red, Blue) |
 | **4-Digit 7-Segment Display** | Displays speed, gear, or system information |
 | **8 Buttons (Resistor Ladder)** | All buttons read through a single ADC pin |
-| **2 Potentiometers** | Center-mounted, using voltage divider for analog input |
-| **External Sensor Support** | Designed for NTC temperature sensor and Hall-effect sensor |
+| **2 Potentiometers** | Center mounted, using voltage divider for analog input |
+| **Buzzer** | Return sound feedback to the user reacting to different variables |
+| **External Sensor Support** | Designed for external NTC temperature sensor and Hall-effect sensor inputs|
 | **Custom Buttons PCB** | Top-mounted buttons integrated into the housing |
 
-### LED Functionality
+<p align="center">
+  <img src="Media/MVIMG_20260204_160551.jpg" width="800">
+</p>
+
 The **15 LEDs**, controlled via the **74LS154 decoder**, provide real-time visual feedback:
 - **Green LEDs** → Speed or system status  
 - **Red LEDs** → Engine RPM / rev-up indication  
 - **Blue LEDs** → Custom functions or gear indicators  
 
 The decoder uses **4 control lines** to efficiently manage all LED outputs.
+
+The **8 buttons** are arranged with a resistor ladder configuration, reading all the possible values with an ADC converter (analog input).
 
 ---
 
@@ -44,7 +46,7 @@ The decoder uses **4 control lines** to efficiently manage all LED outputs.
 The entire mechanical structure was **designed from scratch in Fusion 360**, prioritizing rigidity, modularity, and professional finish.
 
 <p align="center">
-  <img src="PASTE_INNER_STRUCTURE_IMAGE_HERE" width="600">
+  <img src="Media/MVIMG_20260203_134917_1.jpg" width="800">
 </p>
 
 ### Structural Overview
@@ -76,26 +78,11 @@ The entire mechanical structure was **designed from scratch in Fusion 360**, pri
 
 ---
 
-## 🎮 User Interface & Inputs
-
-- **8 programmable buttons** via resistor ladder  
-- **2 analog potentiometers** for adjustable parameters  
-- **4-digit display** for speed, gear, or telemetry  
-- **RGB LED groups** for intuitive real-time feedback  
-
----
 
 ## 🚀 Project Goals
 
 - Realistic **F1-style input device**
 - Robust **mechanical and electrical integration**
-- Modular design for future firmware expansion
 - Support for additional external sensors
+- Internal steel structure for proper soldering to external axes
 
----
-
-## 🔧 Future Improvements
-- CAN bus or USB HID integration
-- Advanced LED animations synchronized with telemetry
-- Wireless configuration via ESP32-C6
-- Closed-loop haptic feedback
