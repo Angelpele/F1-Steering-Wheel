@@ -1,11 +1,15 @@
+// ================= 74LS154 =================
+const int addrPins[4] = {5, 6, 7, 11};
+
+int pattern[] = {0, 1, 2, 3, 4, 5, 6, 7,
+                 8, 9, 10, 11, 12, 13, 14, 15};
+int patternLength = sizeof(pattern) / sizeof(pattern[0]);
+
 // ================= ADC =================
 const int buttonsPin = 4;
 
-// ================= BUZZER =================
-const int buzzerPin = 12;
-
 // ================= DISPLAY 7 SEG =================
-// Segmentos
+// Segments
 const int segA = 15;
 const int segB = 20;
 const int segC = 18;
@@ -14,7 +18,7 @@ const int segE = 10;
 const int segF = 23;
 const int segG = 19;
 
-// Dígitos (cátodos comunes)
+// Digits (common cathode)
 const int dig1 = 17;
 const int dig2 = 22;
 const int dig3 = 21;
@@ -37,86 +41,40 @@ const byte numbers[10][7] = {
   {1,1,1,1,0,1,1}
 };
 
-// ================= BUTTON DEBOUNCE =================
-unsigned long lastStableTime = 0;
-int lastButton = 0;
-int activeButton = 0;
-int displayValue = 8;              // default = 8
-const unsigned long debounceTime = 120;
-
 // ================= SETUP =================
 void setup() {
   pinMode(buttonsPin, INPUT);
-  pinMode(buzzerPin, OUTPUT);
 
+  for (int i = 0; i < 4; i++) pinMode(addrPins[i], OUTPUT);
   for (int i = 0; i < 7; i++) pinMode(segPins[i], OUTPUT);
   for (int i = 0; i < 4; i++) pinMode(digPins[i], OUTPUT);
 }
 
-// ================= LOOP =================
-void loop() {
-  int adc = analogRead(buttonsPin);
-  int currentButton = decodeButton(adc);
-
-  if (currentButton != lastButton) {
-    lastStableTime = millis();
-    lastButton = currentButton;
+// ================= 74LS154 FUNCTIONS =================
+void selectOutput(int value) {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(addrPins[i], (value >> i) & 0x01);
   }
-
-  if (millis() - lastStableTime > debounceTime) {
-    activeButton = currentButton;
-  }
-
-  // -------- BUZZER --------
-  if (activeButton > 0) {
-    tone(buzzerPin, buttonTone(activeButton));
-  } else {
-    noTone(buzzerPin);
-  }
-
-  // -------- DISPLAY LOGIC --------
-  if (activeButton == 0) {
-    displayValue = 0;      // sin botón → muestra 8
-  } else if (activeButton == 8) {
-    displayValue = 8;      // botón 8 → muestra 0
-  } else {
-    displayValue = activeButton;
-  }
-
-  mostrarNumero(displayValue);
 }
 
-// ================= BUTTON DECODER =================
-int decodeButton(int adc) {
-  if (adc > 2900) return 1;
-  if (adc > 2800) return 2;
-  if (adc > 2400) return 3;
-  if (adc > 1900) return 4;
-  if (adc > 1400) return 5;
-  if (adc > 900)  return 6;
-  if (adc > 550)  return 7;
-  if (adc > 300)  return 0;
-  return 8;
-}
-
-// ================= BUTTON → TONE =================
-int buttonTone(int btn) {
-  switch (btn) {
-    case 1: return 400;
-    case 2: return 500;
-    case 3: return 600;
-    case 4: return 700;
-    case 5: return 800;
-    case 6: return 900;
-    case 7: return 1000;
-    case 8: return 1100;
-    default: return 0;
+void allLedsOn(int duration_ms) {
+  unsigned long start = millis();
+  while (millis() - start < duration_ms) {
+    for (int i = 0; i < 16; i++) {
+      selectOutput(i);
+      delayMicroseconds(500);
+    }
   }
 }
 
 // ================= DISPLAY FUNCTIONS =================
 void mostrarNumero(int num) {
-  int digits[4] = {0, 0, 0, num};
+  int digits[4];
+
+  digits[0] = (num / 1000) % 10;
+  digits[1] = (num / 100)  % 10;
+  digits[2] = (num / 10)   % 10;
+  digits[3] = num % 10;
 
   for (int i = 0; i < 4; i++) {
     activarDigito(i);
@@ -140,5 +98,34 @@ void activarDigito(int d) {
 void apagarDigitos() {
   for (int i = 0; i < 4; i++) {
     digitalWrite(digPins[i], HIGH);
+  }
+}
+
+// ================= LOOP =================
+void loop() {
+
+  // --- LED Forward pattern ---
+  for (int i = 0; i < patternLength; i++) {
+    selectOutput(pattern[i]);
+    delay(10);
+  }
+
+  // --- LED Reverse pattern ---
+  for (int i = patternLength - 1; i >= 0; i--) {
+    selectOutput(pattern[i]);
+    delay(100);
+  }
+
+  // --- Blink all LEDs visually ---
+  for (int i = 0; i < 3; i++) {
+    allLedsOn(500);
+    delay(500);
+  }
+
+  // --- Read ADC and display RAW value ---
+  int adcValue = analogRead(buttonsPin);
+
+  for (int i = 0; i < 50; i++) {   // refresh display for visibility
+    mostrarNumero(adcValue);
   }
 }
